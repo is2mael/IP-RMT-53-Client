@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import erorrHandling from "../util/errors";
 import { request } from "../util/axios";
@@ -20,17 +20,47 @@ export default function Login() {
           password,
         },
       });
-      localStorage.setItem("access_token", response.data.data.access_token);
+      localStorage.setItem("access_token", response.data.access_token);
       console.log(response.data);
-      nav("")
+      nav("/user/get/private/home");
     } catch (error) {
       erorrHandling(error?.response?.data?.message || error.message);
     }
   };
+
+  async function handleCredentialResponse(response) {
+    console.log("Encoded JWT ID token: " + response.credential);
+
+    try {
+      const { data } = await request.post("/login/google", {
+        googleToken: response.credential,
+      });
+      localStorage.setItem("access_token", data.access_token);
+      nav("/user/get/private/home");
+    } catch (err) {
+      console.log(err, "<<< err google login");
+    }
+  }
+
+  useEffect(() => {
+    window.google.accounts.id.initialize({
+      client_id: import.meta.env.VITE_CLIENT_ID,
+      // client_id: import.meta.env.CLIENT_ID,
+      callback: handleCredentialResponse,
+    });
+    window.google.accounts.id.renderButton(
+      document.getElementById("buttonDiv"),
+      { theme: "outline", size: "large" }
+    );
+    window.google.accounts.id.prompt();
+  }, []);
+
   return (
     <div className="container" style={{ paddingTop: "10%" }}>
-        <div className="row justify-content-center">
-          <div className="col-md-6 col-lg-4">
+      <div className="row justify-content-center">
+        <div className="col-md-6 col-lg-4">
+          {/* Tambahkan card wrapper dan efek bayangan */}
+          <div className="card shadow p-4">
             <h2 className="text-center">Login</h2>
             <form onSubmit={handlingLogin}>
               <div className="mb-3">
@@ -60,14 +90,17 @@ export default function Login() {
                   required
                 />
               </div>
-
-              <button type="submit" className="btn btn-primary w-100">
-                Login
-              </button>
+              <div className="d-flex flex-column justify-content-center align-items-center">
+                <button type="submit" className="btn btn-primary px-3">
+                  Login
+                </button>
+                <span>- OR -</span>
+                <div className="px-3" id="buttonDiv"></div>
+              </div>
             </form>
-            <br />
           </div>
         </div>
       </div>
+    </div>
   );
 }
