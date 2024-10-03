@@ -1,6 +1,11 @@
-import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import {
+  createBrowserRouter,
+  Outlet,
+  redirect,
+  RouterProvider,
+} from "react-router-dom";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { createRoot } from "react-dom/client";
 // import "./index.css";
 
@@ -17,125 +22,117 @@ import HomePublic from "./pages/HomePublic";
 import DetailPublic from "./pages/DetailPublic";
 import HomePrivate from "./pages/HomePrivate";
 
+const isNotLogin = async () => {
+  const access_token = localStorage.getItem("access_token");
+  if (!access_token) {
+    throw redirect("/login");
+  } else {
+    return null;
+  }
+};
+
+const isLogin = async () => {
+  const access_token = localStorage.getItem("access_token");
+  if (access_token) {
+    throw redirect("/user/get/private/home");
+  } else {
+    return null;
+  }
+};
+
 const router = createBrowserRouter([
   {
     path: "/",
-    element: 
-    <>
-    <NavbarLogin />
-    <Wellcome />
-    </>,
+    element: (
+      <>
+        <NavbarLogin />
+        <Wellcome />
+      </>
+    ),
   },
   {
     path: "/login",
-    element: 
-    <>
-    <NavbarLogin />,
-    <Login />,
-    </>
+    element: <Login />,
+    loader: isLogin,
+  },
+  {
+    element: (
+      <>
+        <NavbarMember />,
+        <Outlet />
+      </>
+    ),
+    loader: isNotLogin,
+    children: [
+      {
+        path: "/user/get/private/home",
+        element: (
+          <>
+            <HomePrivate />,
+          </>
+        ),
+      },
+      {
+        path: "/register",
+        element: <></>,
+      },
+      {
+        path: "/user/post/private/arts",
+        element: <></>,
+      },
+      {
+        path: "/user/get/private/arts/:id",
+        element: <></>,
+      },
+      {
+        path: "/user/update/private/arts/:id",
+        element: <></>,
+      },
+      {
+        path: "/user/delete/private/arts/:id",
+        element: <></>,
+      },
+      {
+        path: "/user/patch/private/arts/:id/image-url",
+        element: <></>,
+      },
+      {
+        path: "/user/get/private/origins",
+        element: <></>,
+      },
+      {
+        path: "/user/post/private/by/origins",
+        element: <></>,
+      },
+      {
+        path: "/user/put/private/origins/by/:id",
+        element: <></>,
+      },
+    ],
   },
   {
     path: "/home",
-    element: 
-    <>
-    <NavbarPublik />,
-    <HomePublic />,
-    </>
-  },
-  {
-    path: "/register",
-    element: 
-    <>
-    <NavbarLogin />,
-    
-    </>
+    element: (
+      <>
+        <NavbarMember />,
+        <HomePublic />,
+      </>
+    ),
   },
   {
     path: "/public/allArts/:id",
-    element: 
-    <>
-    <NavbarPublik />,
-    <DetailPublic />,
-    </>
+    element: (
+      <>
+        <NavbarMember />,
+        <DetailPublic />,
+      </>
+    ),
   },
-  {
-    path: "/user/get/private/home",
-    element: 
-    <>
-    <NavbarMember />,
-    <HomePrivate />,
-    
-    </>
-  },
-  {
-    path: "/user/post/private/arts",
-    element: 
-    <>
-    <NavbarMember />,
-    
-    </>
-  },
-  {
-    path: "/user/get/private/arts/:id",
-    element: 
-    <>
-    <NavbarMember />,
-    
-    </>
-  },
-  {
-    path: "/private/arts/:id",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  },
-  {
-    path: "/private/arts/:id",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  },
-  {
-    path: "/private/arts/:id/image-url",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  },
-  {
-    path: "/private/origins",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  },
-  {
-    path: "/private/origins",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  },
-  {
-    path: "/private/origins/:id",
-    element: 
-    <>
-    <Navbar />,
-    
-    </>
-  }
 ]);
 
 createRoot(document.getElementById("root")).render(
   <>
-  <ToastContainer />
-  <RouterProvider router={router} />
+    <ToastContainer />
+    <RouterProvider router={router} />
   </>
 );

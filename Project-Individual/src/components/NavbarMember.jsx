@@ -31,15 +31,28 @@ return (
               Home
             </Link>
           </li>
-          <li className="nav-item">
-            <Link className="nav-link active" aria-current="page" to="">
-              Priv
-            </Link>
-          </li>
-          <li className="nav-item">
-            <Link className="nav-link active" aria-current="page" to="/category">
-              Category
-            </Link>
+          <li className="nav-item dropdown">
+            <a
+              className="nav-link active dropdown-toggle"
+              href="#"
+              role="button"
+              data-bs-toggle="dropdown"
+              aria-expanded="false"
+            >
+              Member
+            </a>
+            <ul className="dropdown-menu">
+              <li>
+                <Link className="dropdown-item" to="/user/get/private/home">
+                  Table
+                </Link>
+              </li>
+              <li>
+                <Link className="dropdown-item" onClick={handleLogout} to="/login">
+                  Category
+                </Link>
+              </li>
+            </ul>
           </li>
           <li className="nav-item dropdown">
             <a

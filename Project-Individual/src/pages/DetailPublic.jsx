@@ -14,12 +14,7 @@ export default function DetailPublic() {
     imageUrl: "",
     quantity: "",
   });
-  // const [title, setTitle] = useState("")
-  // const [description, setDescription] = useState("")
-  // const [price, setPrice] = useState("")
-  // const [artis, setArtis] = useState("")
-  // const [imageUrl, setImageUrl] = useState("")
-  // const [quantity, setQuantity] = useState("")
+  
 
   const fetcArtById = async () => {
     try {
@@ -30,12 +25,6 @@ export default function DetailPublic() {
       });
 
       setArt(response.data.data);
-      // setTitle(response.data.data.title)
-      // setDescription(response.data.data.description)
-      // setPrice(response.data.data.price)
-      // setArtis(response.data.data.artis)
-      // setImageUrl(response.data.data.imageUrl)
-      // setQuantity(response.data.data.quantity)
     } catch (error) {
       errorHandling(error?.response?.data?.message || error.message);
     }
