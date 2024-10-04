@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-import errorHandling from "../util/errors";
 import { request } from "../util/axios";
 import { Link } from "react-router-dom";
-import Swal from 'sweetalert2'
+import Swal from "sweetalert2";
 
 export default function HomePrivate() {
   const [art, setArt] = useState([]);
@@ -17,14 +16,18 @@ export default function HomePrivate() {
         },
       });
       setArt(response.data.data);
+     
     } catch (error) {
-      errorHandling(error?.response?.data?.message || error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   };
 
   const handelDelete = async (id) => {
-    console.log(id);
-    
     try {
       await request.delete(`/user/delete/private/arts/${id}`, {
         headers: {
@@ -37,17 +40,18 @@ export default function HomePrivate() {
       Swal.fire({
         title: "Good job!",
         text: "Data Berhasil Di Hapus",
-        icon: "success"
+        icon: "success",
       });
     } catch (error) {
       Swal.fire({
-        title: 'Error',
+        title: "Error",
         text: error.response.data.message,
-        icon: 'error',
-        confirmButtonText: 'Cool'
-      })
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   };
+
 
   useEffect(() => {
     fetchArt();
@@ -58,10 +62,10 @@ export default function HomePrivate() {
         <div className="table-responsive shadow-sm p-3 mb-5 bg-body rounded">
           <table className="table table-hover align-middle text-center">
             <thead>
-              <tr className="table-danger">
+              <tr className="table-info">
                 <th scope="col">No</th>
                 <th scope="col">Title</th>
-                <th scope="col">Content</th>
+                <th scope="col">Description</th>
                 <th scope="col">Image Url</th>
                 <th scope="col">Action</th>
               </tr>
@@ -87,18 +91,18 @@ export default function HomePrivate() {
                       aria-label="Action Buttons"
                     >
                       <button
-                        className="btn btn-warning"
+                        className="btn btn-info"
                         onClick={() => handelDelete(e.id)}
                       >
                         Delete
                       </button>
-                      <Link to={`/user/get/private/arts/${e.id}`}>
-                        <button className="btn btn-info">Edit</button>
-                      </Link>
                       <Link to="/user/update/private/arts/:id">
-                        <button className="btn btn-secondary">
+                        <button className="btn btn-info">
                           Upload Image
                         </button>
+                      </Link>
+                      <Link to={`/user/get/private/arts/${e.id}`}>
+                        <button className="btn btn-info">Edit</button>
                       </Link>
                     </div>
                   </td>
@@ -111,10 +115,10 @@ export default function HomePrivate() {
         <div className="fixed-bottom d-flex justify-content-end m-4">
           <div className="btn-group">
             <Link to="/register">
-              <button className="btn btn-primary">Add User</button>
+              <button className="btn btn-warning">Add User</button>
             </Link>
             <Link to="/user/post/private/arts">
-              <button className="btn btn-primary">Add Post</button>
+              <button className="btn btn-warning">Add Post</button>
             </Link>
           </div>
         </div>

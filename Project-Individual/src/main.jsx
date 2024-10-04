@@ -13,14 +13,18 @@ import Wellcome from "./pages/Wellcome";
 
 import Login from "./pages/Login";
 
-import Navbar from "./components/NavbarPublic";
 import NavbarLogin from "./components/NavbarLogin";
-import NavbarPublik from "./components/NavbarPublic";
 import NavbarMember from "./components/NavbarMember";
 
 import HomePublic from "./pages/HomePublic";
 import DetailPublic from "./pages/DetailPublic";
 import HomePrivate from "./pages/HomePrivate";
+import Edit from "./pages/Edit";
+import Register from "./pages/Register";
+import AddArt from "./pages/AddArt";
+import GeminiForm from "./pages/Ai gemini";
+import AllOrigin from "./pages/Origin/AllOrigin";
+import UploadImageUrl from "./pages/UpdateImage";
 
 const isNotLogin = async () => {
   const access_token = localStorage.getItem("access_token");
@@ -42,13 +46,36 @@ const isLogin = async () => {
 
 const router = createBrowserRouter([
   {
+    path: "/give-me-answer",
+    element: 
+      <>
+        <NavbarLogin />
+        <GeminiForm />
+      </>
+  },
+  {
     path: "/",
-    element: (
+    element: 
       <>
         <NavbarLogin />
         <Wellcome />
       </>
-    ),
+  },
+  {
+    path: "/home",
+    element:
+      <>
+        <NavbarMember />,
+        <HomePublic />,
+      </>
+  },
+  {
+    path: "/public/allArts/:id",
+    element:
+      <>
+        <NavbarMember />,
+        <DetailPublic />,
+      </>
   },
   {
     path: "/login",
@@ -66,39 +93,31 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/user/get/private/home",
-        element: (
-          <>
-            <HomePrivate />,
-          </>
-        ),
+        element: <HomePrivate />
       },
       {
         path: "/register",
-        element: <></>,
+        element: <Register />,
       },
       {
         path: "/user/post/private/arts",
-        element: <></>,
+        element:<AddArt/>,
       },
       {
         path: "/user/get/private/arts/:id",
-        element: <></>,
+        element: <Edit/>,
       },
       {
         path: "/user/update/private/arts/:id",
         element: <></>,
       },
       {
-        path: "/user/delete/private/arts/:id",
-        element: <></>,
-      },
-      {
         path: "/user/patch/private/arts/:id/image-url",
-        element: <></>,
+        element: <UploadImageUrl />,
       },
       {
         path: "/user/get/private/origins",
-        element: <></>,
+        element: <AllOrigin />,
       },
       {
         path: "/user/post/private/by/origins",
@@ -110,24 +129,7 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "/home",
-    element: (
-      <>
-        <NavbarMember />,
-        <HomePublic />,
-      </>
-    ),
-  },
-  {
-    path: "/public/allArts/:id",
-    element: (
-      <>
-        <NavbarMember />,
-        <DetailPublic />,
-      </>
-    ),
-  },
+  
 ]);
 
 createRoot(document.getElementById("root")).render(

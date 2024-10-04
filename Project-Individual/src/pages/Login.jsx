@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import erorrHandling from "../util/errors";
 import { request } from "../util/axios";
 import NavbarLogin from "../components/NavbarLogin";
+import Swal from "sweetalert2";
+
 
 export default function Login() {
   const [email, setEmail] = useState("qwerty@qwerty.com");
   const [password, setPassword] = useState("qwerty");
   const nav = useNavigate();
 
-  const handlingLogin = async (e) => {
+  const handlingSuubmit = async (e) => {
     e.preventDefault();
     try {
       const response = await request({
@@ -18,14 +19,24 @@ export default function Login() {
         headers: {},
         data: {
           email,
-          password,
+          password
         },
       });
       localStorage.setItem("access_token", response.data.access_token);
       console.log(response.data);
       nav("/user/get/private/home");
+      Swal.fire({
+        title: "Good job!",
+        text: "Kamu berhasil login",
+        icon: "success",
+      });
     } catch (error) {
-      erorrHandling(error?.response?.data?.message || error.message);
+      Swal.fire({
+        title: "Error",
+        text: error.response.data.message,
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   };
 
@@ -38,8 +49,18 @@ export default function Login() {
       });
       localStorage.setItem("access_token", data.access_token);
       nav("/user/get/private/home");
+      Swal.fire({
+        title: "Good job!",
+        text: "Kamu berhasil login",
+        icon: "success",
+      });
     } catch (err) {
-      console.log(err, "<<< err google login");
+      Swal.fire({
+        title: "Error",
+        text: err.response.data.message,
+        icon: "error",
+        confirmButtonText: "Cool",
+      });
     }
   }
 
@@ -53,7 +74,7 @@ export default function Login() {
       document.getElementById("buttonDiv"),
       { theme: "outline", size: "large" }
     );
-    window.google.accounts.id.prompt();
+    // window.google.accounts.id.prompt();
   }, []);
 
   return (
@@ -65,7 +86,7 @@ export default function Login() {
             {/* Tambahkan card wrapper dan efek bayangan */}
             <div className="card shadow p-4">
               <h2 className="text-center">Login</h2>
-              <form onSubmit={handlingLogin}>
+              <form onSubmit={handlingSuubmit}>
                 <div className="mb-3">
                   <label htmlFor="input-email" className="form-label">
                     Email
@@ -76,7 +97,7 @@ export default function Login() {
                     className="form-control"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    required
+                   
                   />
                 </div>
 
@@ -90,7 +111,7 @@ export default function Login() {
                     className="form-control"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    required
+                    
                   />
                 </div>
                 <div className="d-flex flex-column justify-content-center align-items-center">
